@@ -2,7 +2,7 @@
 ## Slightly corrected version of auto generated makefile by CodeLite IDE
 ##
 ## Build variables
-ProjectName            :=thermostat
+ProjectName            :=yogurtmaker
 SourceDirectory        :=.
 BuildDirectory         :=./Build
 ObjectSuffix           :=.rel
@@ -29,7 +29,7 @@ CFLAGS   := $(LibrarySwitch) -mstm8
 ##
 ## User defined environment variables
 ##
-Objects=$(BuildDirectory)/ts.c$(ObjectSuffix) $(BuildDirectory)/display.c$(ObjectSuffix) $(BuildDirectory)/timer.c$(ObjectSuffix) $(BuildDirectory)/buttons.c$(ObjectSuffix) $(BuildDirectory)/adc.c$(ObjectSuffix) $(BuildDirectory)/menu.c$(ObjectSuffix) $(BuildDirectory)/params.c$(ObjectSuffix) $(BuildDirectory)/relay.c$(ObjectSuffix) 
+Objects=$(BuildDirectory)/ym.c$(ObjectSuffix) $(BuildDirectory)/display.c$(ObjectSuffix) $(BuildDirectory)/timer.c$(ObjectSuffix) $(BuildDirectory)/buttons.c$(ObjectSuffix) $(BuildDirectory)/adc.c$(ObjectSuffix) $(BuildDirectory)/menu.c$(ObjectSuffix) $(BuildDirectory)/params.c$(ObjectSuffix) $(BuildDirectory)/relay.c$(ObjectSuffix) 
 
 ##
 ## Main Build Targets 
