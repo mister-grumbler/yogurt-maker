@@ -1,6 +1,6 @@
 /*
- * This file is part of the W1209 firmware replacement project
- * (https://github.com/mister-grumbler/w1209-firmware).
+ * This file is part of the firmware for yogurt maker project
+ * (https://github.com/mister-grumbler/yogurt-maker).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,13 +49,36 @@
 static unsigned long uptime;
 
 /**
+ * @brief Utility function. Appends characters from one string to the
+ *  end of another string.
+ * @param from
+ *  Pointer to the source string.
+ * @param dst
+ *  Pointer to the destination string.
+ */
+static void strAppend (unsigned char * src, unsigned char * dst)
+{
+    unsigned char i, s;
+
+    for (i = 0; dst[i] != 0; i++);
+
+    s = i;
+
+    for (i = 0; src[i] != 0; i++) {
+        dst[s + i] = src[i];
+    }
+
+    dst[s + i] = 0;
+}
+
+/**
  * @brief Initialize timer's configuration registers and reset uptime.
  */
 void initTimer()
 {
     CLK_CKDIVR = 0x00;  // Set the frequency to 16 MHz
     TIM4_PSCR = 0x07;   // CLK / 128 = 125KHz
-    TIM4_ARR = 0xFA;    // 125KHz /  250(0xFA) = 500Hz
+    TIM4_ARR = 0xF5;    // 125KHz /  250(0xFA) = 500Hz
     TIM4_IER = 0x01;    // Enable interrupt on update event
     TIM4_CR1 = 0x05;    // Enable timer
     resetUptime();
@@ -123,6 +146,95 @@ unsigned char getUptimeHours()
 unsigned char getUptimeDays()
 {
     return (unsigned char) ( (uptime >> DAYS_FIRST_BIT) & BITMASK (BITS_FOR_DAYS) );
+}
+
+/**
+ * @brief Constructs string that represents current uptime using given format.
+ * @param strBuff
+ *  A pointer to a string buffer where the result should be placed.
+ * @param format
+ *  Day - D | d, Hour - H | h, Minute - M | m, Second - S | s.
+ * In place of capital leter the actual value will be shown even if this
+ * value is zero. The small leter will be replaced by actual value only
+ * if this value is non-zero.
+ *  Due to the limited display size, only the "." character is allowed
+ * as a separator.
+ * Example: "dd.hH.MM" for 00 days, 10 hours and 02 minutes will produce
+ * ".10.02" result.
+ */
+void uptimeToString (unsigned char* strBuff, const unsigned char* format)
+{
+    unsigned char i, j, f[3], v;
+
+    for (i = 0; format[i] != 0; i++) {
+        switch (format[i]) {
+        case 'd':
+        case 'D':
+            v = getUptimeDays();
+            j = 1;
+
+            if (format[i + 1] == 'D') {
+                j++;
+                i++;
+            }
+
+            break;
+
+        case 'h':
+        case 'H':
+            v = getUptimeHours();
+            j = 1;
+
+            if (format[i + 1] == 'H') {
+                j++;
+                i++;
+            }
+
+            break;
+
+        case 'm':
+        case 'M':
+            v = getUptimeMinutes();
+            j = 1;
+
+            if (format[i + 1] == 'M') {
+                j++;
+                i++;
+            }
+
+            break;
+
+        case 's':
+        case 'S':
+            v = getUptimeSeconds();
+            j = 1;
+
+            if (format[i + 1] == 'S') {
+                j++;
+                i++;
+            }
+
+            break;
+
+        default:
+            f[0] = format[i];
+            f[1] = 0;
+            strAppend ( (unsigned char *) f, strBuff);
+            continue;
+        }
+
+        f[j] = 0;
+
+        // Converting the value to the substring
+        for (; j > 0; j--) {
+            f[j - 1] = '0' + (v % 10);
+            v /= 10;
+        }
+
+        // Append substring at the end of the resulting string
+        strAppend ( (unsigned char *) f, strBuff);
+    }
+
 }
 
 /**

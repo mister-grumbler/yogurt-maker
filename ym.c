@@ -1,6 +1,6 @@
 /*
- * This file is part of the W1209 firmware replacement project
- * (https://github.com/mister-grumbler/w1209-firmware).
+ * This file is part of the firmware for yogurt maker project
+ * (https://github.com/mister-grumbler/yogurt-maker).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,25 +68,29 @@ int main()
         }
 
         if (getMenuDisplay() == MENU_ROOT) {
-//            if (getUptimeSeconds() & 0x08) {
-//                int temp = getTemperature();
-//                itofpa (temp, (char*) stringBuffer, 0);
-//                setDisplayStr ( (char*) stringBuffer);
-//
-//                if (getParamById (PARAM_OVERHEAT_INDICATION) ) {
-//                    if (temp < getParamById (PARAM_MIN_TEMPERATURE) ) {
-//                        setDisplayStr ("LLL");
-//                    } else if (temp > getParamById (PARAM_MAX_TEMPERATURE) ) {
-//                        setDisplayStr ("HHH");
-//                    }
-//                }
-//            } else {
-            itofpa (getUptimeHours(), (char*) stringBuffer, 6);
-            itofpa (getUptimeMinutes(), (char*) timerBuffer, 6);
-            strConcat ( (char*) timerBuffer, (char*) stringBuffer);
-            setDisplayStr ( (char*) stringBuffer);
-            setDisplayDot (0, (getUptimeSeconds() & 1) );
-//            }
+            if (getUptimeSeconds() & 0x08) {
+                int temp = getTemperature();
+                itofpa (temp, (char*) stringBuffer, 0);
+                setDisplayStr ( (char*) stringBuffer);
+
+                if (getParamById (PARAM_OVERHEAT_INDICATION) ) {
+                    if (temp < getParamById (PARAM_MIN_TEMPERATURE) ) {
+                        setDisplayStr ("LLL");
+                    } else if (temp > getParamById (PARAM_MAX_TEMPERATURE) ) {
+                        setDisplayStr ("HHH");
+                    }
+                }
+            } else {
+                stringBuffer[0] = 0;
+
+                if (getUptimeTicks() & 0x100) {
+                    uptimeToString ( (unsigned char*) stringBuffer, "HMM");
+                } else {
+                    uptimeToString ( (unsigned char*) stringBuffer, "H.MM");
+                }
+
+                setDisplayStr ( (char*) stringBuffer);
+            }
         } else if (getMenuDisplay() == MENU_SET_THRESHOLD) {
             paramToString (PARAM_THRESHOLD, (char*) stringBuffer);
             setDisplayStr ( (char*) stringBuffer);
