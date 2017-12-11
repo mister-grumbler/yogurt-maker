@@ -1,6 +1,6 @@
 /*
- * This file is part of the W1209 firmware replacement project
- * (https://github.com/mister-grumbler/w1209-firmware).
+ * This file is part of the firmware for yogurt maker project
+ * (https://github.com/mister-grumbler/yogurt-maker).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #include "relay.h"
 #include "stm8s003/gpio.h"
 #include "adc.h"
+#include "timer.h"
 #include "params.h"
 
 #define RELAY_PORT              PA_ODR
@@ -63,6 +64,13 @@ void setRelay (bool on)
  */
 void refreshRelay()
 {
+    bool mode = getParamById (PARAM_RELAY_MODE);
+
+    if (!isFTimer() ) {
+        setRelay (mode);
+        return;
+    }
+
     if (state) { // Relay state is enabled
         if (getTemperature() < (getParamById (PARAM_THRESHOLD)
                                 - (getParamById (PARAM_RELAY_HYSTERESIS) >> 3) ) ) {
@@ -70,13 +78,13 @@ void refreshRelay()
 
             if ( (getParamById (PARAM_RELAY_DELAY) << RELAY_TIMER_MULTIPLIER) < timer) {
                 state = false;
-                setRelay (getParamById (PARAM_RELAY_MODE) );
+                setRelay (!mode);
             } else {
-                setRelay (!getParamById (PARAM_RELAY_MODE) );
+                setRelay (mode);
             }
         } else {
             timer = 0;
-            setRelay (!getParamById (PARAM_RELAY_MODE) );
+            setRelay (mode);
         }
     } else { // Relay state is disabled
         if (getTemperature() > (getParamById (PARAM_THRESHOLD)
@@ -85,13 +93,13 @@ void refreshRelay()
 
             if ( (getParamById (PARAM_RELAY_DELAY) << RELAY_TIMER_MULTIPLIER) < timer) {
                 state = true;
-                setRelay (!getParamById (PARAM_RELAY_MODE) );
+                setRelay (mode);
             } else {
-                setRelay (getParamById (PARAM_RELAY_MODE) );
+                setRelay (!mode);
             }
         } else {
             timer = 0;
-            setRelay (getParamById (PARAM_RELAY_MODE) );
+            setRelay (!mode);
         }
     }
 }
