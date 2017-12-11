@@ -1,6 +1,6 @@
 /*
- * This file is part of the W1209 firmware replacement project
- * (https://github.com/mister-grumbler/w1209-firmware).
+ * This file is part of the firmware for yogurt maker project
+ * (https://github.com/mister-grumbler/yogurt-maker).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,8 @@
 #define PARAM_TEMPERATURE_CORRECTION    4
 #define PARAM_RELAY_DELAY               5
 #define PARAM_OVERHEAT_INDICATION       6
-#define PARAM_THRESHOLD                 9
+#define PARAM_THRESHOLD                 7
+#define PARAM_FERMENTATION_TIME         9
 
 int getParam();
 void incParam();

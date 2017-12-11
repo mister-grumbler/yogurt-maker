@@ -1,6 +1,6 @@
 /*
- * This file is part of the W1209 firmware replacement project
- * (https://github.com/mister-grumbler/w1209-firmware).
+ * This file is part of the firmware for yogurt maker project
+ * (https://github.com/mister-grumbler/yogurt-maker).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,24 +77,31 @@ void feedMenu (unsigned char event)
         switch (event) {
         case MENU_EVENT_PUSH_BUTTON1:
             timer = 0;
-            menuDisplay = MENU_SET_THRESHOLD;
+            menuDisplay = MENU_SET_TIMER;
             break;
 
         case MENU_EVENT_RELEASE_BUTTON1:
             if (timer < MENU_5_SEC_PASSED) {
-                menuState = MENU_SET_THRESHOLD;
+                menuState = MENU_SET_TIMER;
             }
 
             timer = 0;
             break;
 
         case MENU_EVENT_CHECK_TIMER:
-            if (getButton1() ) {
-                if (timer > MENU_3_SEC_PASSED) {
+            if (timer > MENU_3_SEC_PASSED) {
+                if (getButton1() ) {
                     setParamId (0);
                     timer = 0;
                     menuState = menuDisplay = MENU_SELECT_PARAM;
+                } else {
+                    if (getButton2() ) {    // Enable thermostat
+
+                    } else if (getButton3()) {  // Start fermentation timer
+                        
+                    }
                 }
+
             }
 
             break;
@@ -204,7 +211,7 @@ void feedMenu (unsigned char event)
         default:
             break;
         }
-    } else if (menuState == MENU_SET_THRESHOLD) {
+    } else if (menuState == MENU_SET_TIMER) {
         switch (event) {
         case MENU_EVENT_PUSH_BUTTON1:
             timer = 0;
@@ -223,7 +230,7 @@ void feedMenu (unsigned char event)
             break;
 
         case MENU_EVENT_PUSH_BUTTON2:
-            setParamId (PARAM_THRESHOLD);
+            setParamId (PARAM_FERMENTATION_TIME);
             incParam();
 
         case MENU_EVENT_RELEASE_BUTTON2:
@@ -231,7 +238,7 @@ void feedMenu (unsigned char event)
             break;
 
         case MENU_EVENT_PUSH_BUTTON3:
-            setParamId (PARAM_THRESHOLD);
+            setParamId (PARAM_FERMENTATION_TIME);
             decParam();
 
         case MENU_EVENT_RELEASE_BUTTON3:
@@ -246,7 +253,7 @@ void feedMenu (unsigned char event)
             }
 
             if (timer > MENU_1_SEC_PASSED + MENU_AUTOINC_DELAY) {
-                setParamId (PARAM_THRESHOLD);
+                setParamId (PARAM_FERMENTATION_TIME);
 
                 if (getButton2() ) {
                     incParam();

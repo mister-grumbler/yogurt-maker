@@ -91,8 +91,8 @@ int main()
 
                 setDisplayStr ( (char*) stringBuffer);
             }
-        } else if (getMenuDisplay() == MENU_SET_THRESHOLD) {
-            paramToString (PARAM_THRESHOLD, (char*) stringBuffer);
+        } else if (getMenuDisplay() == MENU_SET_TIMER) {
+            paramToString (PARAM_FERMENTATION_TIME, (char*) stringBuffer);
             setDisplayStr ( (char*) stringBuffer);
         } else if (getMenuDisplay() == MENU_SELECT_PARAM) {
             paramMsg[1] = '0' + getParamId();

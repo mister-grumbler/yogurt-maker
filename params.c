@@ -1,6 +1,6 @@
 /*
- * This file is part of the W1209 firmware replacement project
- * (https://github.com/mister-grumbler/w1209-firmware).
+ * This file is part of the firmware for yogurt maker project
+ * (https://github.com/mister-grumbler/yogurt-maker).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,8 @@
  * P4 - | 0 | 7.0 ... -7.0 Correction of temperature value
  * P5 - | 0 | 0 ... 10 Relay switching delay in minutes
  * P6 - |Off| On/Off Indication of overheating
- * TH - | 28| Threshold value
+ * P7 - | 44| Threshold value in degrees of Celsius
+ * FT - | 8h| 1h ... 15h Fermentation time in hours
  */
 
 #include "params.h"
@@ -42,9 +43,9 @@
 
 static unsigned char paramId;
 static int paramCache[10];
-const int paramMin[] = {0, 1, -45, -50, -70, 0, 0, 0, 0, -500};
-const int paramMax[] = {1, 150, 110, 105, 70, 10, 1, 0, 0, 1100};
-const int paramDefault[] = {0, 20, 110, -50, 0, 0, 0, 0, 0, 280};
+const int paramMin[] = {0, 1, -45, -50, -70, 0, 0, 300, 0, 1};
+const int paramMax[] = {1, 150, 110, 105, 70, 10, 1, 550, 0, 15};
+const int paramDefault[] = {0, 20, 110, -50, 0, 0, 0, 440, 0, 8};
 
 /**
  * @brief Check values in the EEPROM to be correct then load them into
@@ -163,7 +164,7 @@ void setParamId (unsigned char val)
  */
 void incParamId()
 {
-    if (paramId < 6) {
+    if (paramId < 7) {
         paramId++;
     } else {
         paramId = 0;
@@ -178,7 +179,7 @@ void decParamId()
     if (paramId > 0) {
         paramId--;
     } else {
-        paramId = 6;
+        paramId = 7;
     }
 }
 
@@ -193,13 +194,15 @@ void paramToString (unsigned char id, unsigned char* strBuff)
 {
     switch (id) {
     case PARAM_RELAY_MODE:
+        ( (unsigned char*) strBuff) [0] = 'N';
+
         if (paramCache[id]) {
-            ( (unsigned char*) strBuff) [0] = 'H';
+            ( (unsigned char*) strBuff) [1] = 'O';
         } else {
-            ( (unsigned char*) strBuff) [0] = 'C';
+            ( (unsigned char*) strBuff) [1] = 'C';
         }
 
-        ( (unsigned char*) strBuff) [1] = 0;
+        ( (unsigned char*) strBuff) [2] = 0;
         break;
 
     case PARAM_RELAY_HYSTERESIS:
@@ -238,6 +241,10 @@ void paramToString (unsigned char id, unsigned char* strBuff)
 
     case PARAM_THRESHOLD:
         itofpa (paramCache[id], strBuff, 0);
+        break;
+
+    case PARAM_FERMENTATION_TIME:
+        itofpa (paramCache[id], strBuff, 6);
         break;
 
     default: // Display "OFF" to all unknown ID
