@@ -43,9 +43,9 @@
 
 static unsigned char paramId;
 static int paramCache[10];
-const int paramMin[] = {0, 1, -45, -50, -70, 0, 0, 300, 0, 1};
-const int paramMax[] = {1, 150, 110, 105, 70, 10, 1, 550, 0, 15};
-const int paramDefault[] = {0, 20, 110, -50, 0, 0, 0, 440, 0, 8};
+const int paramMin[] = {0, 1, 30, 10, -70, 0, 0, 300, 0, 1};
+const int paramMax[] = {1, 150, 70, 45, 70, 10, 1, 550, 0, 15};
+const int paramDefault[] = {0, 20, 50, 20, 0, 0, 0, 440, 0, 8};
 
 /**
  * @brief Check values in the EEPROM to be correct then load them into
