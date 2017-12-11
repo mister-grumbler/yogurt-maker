@@ -25,6 +25,7 @@
 #include "stm8s003/timer.h"
 #include "adc.h"
 #include "display.h"
+#include "params.h"
 #include "menu.h"
 #include "relay.h"
 
@@ -47,6 +48,12 @@
  * 31      26       21         15         9         0
  */
 static unsigned long uptime;
+/**
+ * |--Hour--|--Minute--|
+ * 11       6          0
+ */
+static unsigned int fTimer;
+static unsigned char fTimerSeconds;
 
 /**
  * @brief Utility function. Appends characters from one string to the
@@ -82,6 +89,42 @@ void initTimer()
     TIM4_IER = 0x01;    // Enable interrupt on update event
     TIM4_CR1 = 0x05;    // Enable timer
     resetUptime();
+    fTimer = 0;
+}
+
+/**
+ * @brief Starts fermentation timer.
+ */
+void startFTimer()
+{
+    fTimer = ( (getParamById (PARAM_FERMENTATION_TIME) - 1) << BITS_FOR_MINUTES) + 59;
+}
+
+/**
+ * @brief Gets minutes part of the fermentation timer current value.
+ * @return number of minutes remaining until end of that hour.
+ */
+unsigned char getFTimerMinutes()
+{
+    return (unsigned char) (fTimer & BITMASK (BITS_FOR_MINUTES) );
+}
+
+/**
+ * @brief Gets hours part of the fermentation timer current value.
+ * @return number of hours remaining.
+ */
+unsigned char getFTimerHours()
+{
+    return (unsigned char) (fTimer >> BITS_FOR_MINUTES);
+}
+
+/**
+ * @brief Checks fermentation timer to be active.
+ * @return True if fermentation timer is active.
+ */
+bool isFTimer()
+{
+    return fTimer != 0;
 }
 
 /**
@@ -216,6 +259,28 @@ void uptimeToString (unsigned char* strBuff, const unsigned char* format)
 
             break;
 
+        case 't':
+            v = getFTimerMinutes();
+            j = 1;
+
+            if (format[i + 1] == 't') {
+                j++;
+                i++;
+            }
+
+            break;
+
+        case 'T':
+            v = getFTimerHours();
+            j = 1;
+
+            if (format[i + 1] == 'T') {
+                j++;
+                i++;
+            }
+
+            break;
+
         default:
             f[0] = format[i];
             f[1] = 0;
@@ -265,6 +330,15 @@ void TIM4_UPD_handler() __interrupt (23)
         if ( ( (unsigned char) (uptime >> HOURS_FIRST_BIT) & BITMASK (BITS_FOR_HOURS) ) == 24) {
             uptime &= NBITMASK (DAYS_FIRST_BIT);
             uptime += (unsigned long) 1 << DAYS_FIRST_BIT;
+        }
+
+        // Decrement fermentation timer value.
+        if (isFTimer() && fTimerSeconds == getUptimeSeconds() ) {
+            if (getFTimerMinutes() > 0) {
+                fTimer--;
+            } else {
+                fTimer = ( (getFTimerHours() - 1) << BITS_FOR_MINUTES) + 59;
+            }
         }
     }
 

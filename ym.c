@@ -83,10 +83,10 @@ int main()
             } else {
                 stringBuffer[0] = 0;
 
-                if (getUptimeTicks() & 0x100) {
-                    uptimeToString ( (unsigned char*) stringBuffer, "HMM");
+                if (isFTimer() && (getUptimeTicks() & 0x100)) {
+                    uptimeToString ( (unsigned char*) stringBuffer, "Ttt");
                 } else {
-                    uptimeToString ( (unsigned char*) stringBuffer, "H.MM");
+                    uptimeToString ( (unsigned char*) stringBuffer, "T.tt");
                 }
 
                 setDisplayStr ( (char*) stringBuffer);

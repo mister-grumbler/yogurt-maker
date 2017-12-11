@@ -18,8 +18,16 @@
 #ifndef TIMER_H
 #define TIMER_H
 
+#ifndef bool
+#define bool    _Bool
+#define true    1
+#define false   0
+#endif
+
 void initTimer();
+void startFTimer();
 void resetUptime();
+bool isFTimer();
 unsigned long getUptime();
 unsigned int getUptimeTicks();
 unsigned char getUptimeSeconds();

@@ -98,7 +98,7 @@ void feedMenu (unsigned char event)
                     if (getButton2() ) {    // Enable thermostat
 
                     } else if (getButton3()) {  // Start fermentation timer
-                        
+                        startFTimer();
                     }
                 }
 
