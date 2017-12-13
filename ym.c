@@ -68,7 +68,22 @@ int main()
         }
 
         if (getMenuDisplay() == MENU_ROOT) {
-            if (getUptimeSeconds() & 0x08) {
+            if (isRelayEnabled() && getUptimeSeconds() & 0x08) {
+                stringBuffer[0] = 0;
+
+                if (isFTimer() ) {
+                    if ( (getUptimeTicks() & 0x100) ) {
+                        uptimeToString ( (unsigned char*) stringBuffer, "Ttt");
+                    } else {
+                        uptimeToString ( (unsigned char*) stringBuffer, "T.tt");
+                    }
+                } else {
+                    ((unsigned char*) stringBuffer)[0] = 'T';
+                    ((unsigned char*) stringBuffer)[1] = 0;
+                }
+
+                setDisplayStr ( (char*) stringBuffer);
+            } else {
                 int temp = getTemperature();
                 itofpa (temp, (char*) stringBuffer, 0);
                 setDisplayStr ( (char*) stringBuffer);
@@ -80,16 +95,6 @@ int main()
                         setDisplayStr ("HHH");
                     }
                 }
-            } else {
-                stringBuffer[0] = 0;
-
-                if (isFTimer() && (getUptimeTicks() & 0x100)) {
-                    uptimeToString ( (unsigned char*) stringBuffer, "Ttt");
-                } else {
-                    uptimeToString ( (unsigned char*) stringBuffer, "T.tt");
-                }
-
-                setDisplayStr ( (char*) stringBuffer);
             }
         } else if (getMenuDisplay() == MENU_SET_TIMER) {
             paramToString (PARAM_FERMENTATION_TIME, (char*) stringBuffer);

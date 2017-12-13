@@ -26,6 +26,7 @@
 
 void initTimer();
 void startFTimer();
+void stopFTimer();
 void resetUptime();
 bool isFTimer();
 unsigned long getUptime();

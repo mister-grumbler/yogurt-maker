@@ -24,6 +24,7 @@
 #include "display.h"
 #include "params.h"
 #include "timer.h"
+#include "relay.h"
 
 #define MENU_1_SEC_PASSED   32
 #define MENU_3_SEC_PASSED   MENU_1_SEC_PASSED * 3
@@ -90,15 +91,26 @@ void feedMenu (unsigned char event)
 
         case MENU_EVENT_CHECK_TIMER:
             if (timer > MENU_3_SEC_PASSED) {
+                timer = 0;
+
                 if (getButton1() ) {
                     setParamId (0);
-                    timer = 0;
                     menuState = menuDisplay = MENU_SELECT_PARAM;
                 } else {
-                    if (getButton2() ) {    // Enable thermostat
-
-                    } else if (getButton3()) {  // Start fermentation timer
-                        startFTimer();
+                    if (getButton2() ) {    // Enable/Disable thermostat
+                        if (isRelayEnabled() && !isFTimer() ) {
+                            enableRelay (false);
+                        } else {
+                            enableRelay (true);
+                        }
+                    } else if (getButton3() ) { // Start/Stop fermentation timer
+                        if (isFTimer() ) {
+                            stopFTimer();
+                            enableRelay (false);
+                        } else {
+                            startFTimer();
+                            enableRelay (true);
+                        }
                     }
                 }
 

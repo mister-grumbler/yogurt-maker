@@ -31,6 +31,7 @@
 
 static unsigned int timer;
 static bool state;
+static bool relayEnable;
 
 /**
  * @brief Configure appropriate bits for GPIO port A, reset local timer
@@ -42,13 +43,14 @@ void initRelay()
     PA_CR1 |= RELAY_BIT;
     timer = 0;
     state = false;
+    relayEnable = false;
 }
 
 /**
  * @brief Sets state of the relay.
  * @param on - true, off - false
  */
-void setRelay (bool on)
+static void setRelay (bool on)
 {
     if (on) {
         RELAY_PORT |= RELAY_BIT;
@@ -59,6 +61,24 @@ void setRelay (bool on)
 }
 
 /**
+ * @brief Enables relay functionality.
+ * @param state
+ */
+void enableRelay (bool state)
+{
+    relayEnable = state;
+}
+
+/**
+ * @brief Returns the functional mode of the relay.
+ * @return true - enabled, false - disabled.
+ */
+bool isRelayEnabled()
+{
+    return relayEnable;
+}
+
+/**
  * @brief This function is being called during timer's interrupt
  *  request so keep it extremely small and fast.
  */
@@ -66,7 +86,7 @@ void refreshRelay()
 {
     bool mode = getParamById (PARAM_RELAY_MODE);
 
-    if (!isFTimer() ) {
+    if (!isRelayEnabled() ) {
         setRelay (mode);
         return;
     }

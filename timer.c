@@ -101,6 +101,14 @@ void startFTimer()
 }
 
 /**
+ * @brief Stops fermentation timer.
+ */
+void stopFTimer()
+{
+    fTimer = 0;
+}
+
+/**
  * @brief Gets minutes part of the fermentation timer current value.
  * @return number of minutes remaining until end of that hour.
  */
@@ -336,6 +344,11 @@ void TIM4_UPD_handler() __interrupt (23)
         if (isFTimer() && fTimerSeconds == getUptimeSeconds() ) {
             if (getFTimerMinutes() > 0) {
                 fTimer--;
+
+                // Disable the relay functionality when the fermentation timer is exhausted.
+                if (fTimer == 0) {
+                    enableRelay (false);
+                }
             } else {
                 fTimer = ( (getFTimerHours() - 1) << BITS_FOR_MINUTES) + 59;
             }
