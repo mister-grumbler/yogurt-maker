@@ -1,6 +1,6 @@
 /*
- * This file is part of the W1209 firmware replacement project
- * (https://github.com/mister-grumbler/w1209-firmware).
+ * This file is part of the firmware for yogurt maker project
+ * (https://github.com/mister-grumbler/yogurt-maker).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -399,6 +399,11 @@ static void setDigit (unsigned char id, unsigned char val, bool dot)
     case 'R':
         displayAC[id] = SSD_SEG_F_BIT;
         displayD[id] = SSD_SEG_A_BIT | SSD_SEG_E_BIT;
+        break;
+
+    case 'T':
+        displayAC[id] = SSD_SEG_F_BIT | SSD_SEG_G_BIT;
+        displayD[id] = SSD_SEG_D_BIT | SSD_SEG_E_BIT;
         break;
 
     default:
