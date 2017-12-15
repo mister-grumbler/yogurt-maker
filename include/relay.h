@@ -25,6 +25,7 @@
 #endif
 
 void initRelay();
+void buzzRelay ();
 void refreshRelay();
 bool isRelayEnabled();
 void enableRelay (bool state);

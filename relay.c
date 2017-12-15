@@ -28,8 +28,11 @@
 #define RELAY_PORT              PA_ODR
 #define RELAY_BIT               0x08
 #define RELAY_TIMER_MULTIPLIER  7
+#define RELAY_BUZZ_OFF_PULSES   6000
+#define RELAY_BUZZ_ON_PULSES    30
 
 static unsigned int timer;
+static unsigned int pulses;
 static bool state;
 static bool relayEnable;
 
@@ -58,6 +61,34 @@ static void setRelay (bool on)
         RELAY_PORT &= ~RELAY_BIT;
     }
 
+}
+
+/**
+ * @brief Changes state of the relay.
+ */
+static void switchRelay ()
+{
+    RELAY_PORT ^= RELAY_BIT;
+}
+
+/**
+ * @brief Makes periodic buzz using relay when called on every tick.
+ */
+void buzzRelay ()
+{
+    if (!isRelayEnabled() ) {
+        pulses++;
+
+        if (pulses > (RELAY_BUZZ_OFF_PULSES + RELAY_BUZZ_ON_PULSES) ) {
+            pulses = 0;
+            setRelay (getParamById (PARAM_RELAY_MODE) );
+            return;
+        }
+
+        if (pulses > RELAY_BUZZ_OFF_PULSES) {
+            switchRelay();
+        }
+    }
 }
 
 /**

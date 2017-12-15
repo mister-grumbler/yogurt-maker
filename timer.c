@@ -358,6 +358,8 @@ void TIM4_UPD_handler() __interrupt (23)
     uptime++;
 
     // Try not to call all refresh functions at once.
+    buzzRelay ();
+
     if ( ( (unsigned char) getUptimeTicks() & 0x0F) == 1) {
         refreshMenu();
     } else if ( ( (unsigned char) getUptimeTicks() & 0xFF) == 2) {
