@@ -29,7 +29,8 @@
 #define RELAY_BIT               0x08
 #define RELAY_TIMER_MULTIPLIER  7
 #define RELAY_BUZZ_OFF_PULSES   6000
-#define RELAY_BUZZ_ON_PULSES    30
+#define RELAY_PRE_BUZZ_PULSES   10
+#define RELAY_BUZZ_ON_PULSES    100
 
 static unsigned int timer;
 static unsigned int pulses;
@@ -79,14 +80,20 @@ void buzzRelay ()
     if (!isRelayEnabled() ) {
         pulses++;
 
-        if (pulses > (RELAY_BUZZ_OFF_PULSES + RELAY_BUZZ_ON_PULSES) ) {
+        if (pulses > (RELAY_BUZZ_OFF_PULSES + RELAY_PRE_BUZZ_PULSES + RELAY_BUZZ_ON_PULSES) ) {
             pulses = 0;
             setRelay (getParamById (PARAM_RELAY_MODE) );
             return;
         }
 
-        if (pulses > RELAY_BUZZ_OFF_PULSES) {
+        if (pulses > (RELAY_BUZZ_OFF_PULSES + RELAY_PRE_BUZZ_PULSES) ) {
             switchRelay();
+            return;
+        }
+
+        // Ensure that relay is off before buzzing.
+        if (pulses > RELAY_BUZZ_OFF_PULSES) {
+            setRelay (false);
         }
     }
 }
