@@ -59,7 +59,7 @@ unsigned char getMenuDisplay()
  *  MENU_ROOT
  *  MENU_SELECT_PARAM
  *  MENU_CHANGE_PARAM
- *  MENU_SET_THRESHOLD
+ *  MENU_SET_TIMER
  *
  * @param event is one of:
  *  MENU_EVENT_PUSH_BUTTON1
