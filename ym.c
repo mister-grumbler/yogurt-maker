@@ -68,22 +68,18 @@ int main()
         }
 
         if (getMenuDisplay() == MENU_ROOT) {
-            // Alternately show values for temperature and fermentation timer
-            // if it is running.
             if (isRelayEnabled() && getUptimeSeconds() & 0x08) {
                 stringBuffer[0] = 0;
 
                 if (isFTimer() ) {
-                    // Making blink the dot in between the hours and minutes.
                     if ( (getUptimeTicks() & 0x100) ) {
                         uptimeToString ( (unsigned char*) stringBuffer, "Ttt");
                     } else {
                         uptimeToString ( (unsigned char*) stringBuffer, "T.tt");
                     }
                 } else {
-                    // Show "n.t.r." -> no timer is running
-                    setDisplayStr ("N.T.R.");
-                    continue;
+                    ((unsigned char*) stringBuffer)[0] = 'T';
+                    ((unsigned char*) stringBuffer)[1] = 0;
                 }
 
                 setDisplayStr ( (char*) stringBuffer);
