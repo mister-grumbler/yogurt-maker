@@ -33,6 +33,8 @@
 
 static unsigned char menuDisplay;
 static unsigned char menuState;
+/* Timer counter of menu. Being incremented on every call of refreshMenu() function.
+ * Used to handle menu timeouts and handling of actions on holding a button. */
 static unsigned int timer;
 
 /**
