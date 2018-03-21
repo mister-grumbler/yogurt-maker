@@ -30,7 +30,7 @@
 #define RELAY_TIMER_MULTIPLIER  7
 #define RELAY_BUZZ_OFF_PULSES   6000
 #define RELAY_PRE_BUZZ_PULSES   10
-#define RELAY_BUZZ_ON_PULSES    100
+#define RELAY_BUZZ_ON_PULSES    60
 
 static unsigned int timer;
 static unsigned int pulses;
@@ -47,7 +47,7 @@ void initRelay()
     PA_CR1 |= RELAY_BIT;
     timer = 0;
     state = false;
-    relayEnable = false;
+    relayEnable = true;
 }
 
 /**
