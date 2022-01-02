@@ -51,8 +51,8 @@ $(BuildDirectory)/.d:
 ##
 ## Objects
 ##
-$(BuildDirectory)/ts.c$(ObjectSuffix): ts.c
-	$(CC) $(SourceSwitch) "$(SourceDirectory)/ts.c" $(CFLAGS) $(ObjectSwitch)$(BuildDirectory)/ts.c$(ObjectSuffix) $(IncludePath)
+$(BuildDirectory)/ym.c$(ObjectSuffix): ym.c
+	$(CC) $(SourceSwitch) "$(SourceDirectory)/ym.c" $(CFLAGS) $(ObjectSwitch)$(BuildDirectory)/ym.c$(ObjectSuffix) $(IncludePath)
 
 $(BuildDirectory)/display.c$(ObjectSuffix): display.c
 	$(CC) $(SourceSwitch) "$(SourceDirectory)/display.c" $(CFLAGS) $(ObjectSwitch)$(BuildDirectory)/display.c$(ObjectSuffix) $(IncludePath)
